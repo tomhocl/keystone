@@ -89,7 +89,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const pageMiddleware: AdminUIConfig<BaseKeystoneTypeInfo>['pageMiddleware'] = async ({
+  const authMiddleware: AdminUIConfig<BaseKeystoneTypeInfo>['pageMiddleware'] = async ({
     context,
     isValidSession,
   }) => {
@@ -127,7 +127,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const getAdditionalFiles = () => {
+  const defaultGetAdditionalFiles = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -150,9 +150,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Must be added to the ui.publicPages config
    */
-  const publicPages = ['/signin'];
+  const defaultPublicPages = ['/signin'];
   if (initFirstItem) {
-    publicPages.push('/init');
+    defaultPublicPages.push('/init');
   }
 
   /**
@@ -255,6 +255,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     };
   };
 
+  function defaultAccessAllowed (context: KeystoneContext) {
+    return context.session !== undefined;
+  }
+
   /**
    * withAuth
    *
@@ -267,14 +271,24 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
-    let ui = keystoneConfig.ui;
-    if (!keystoneConfig.ui?.isDisabled) {
+
+    let { ui } = keystoneConfig;
+    if (ui && !ui?.isDisabled) {
+      const {
+        getAdditionalFiles = [],
+        isAccessAllowed = defaultAccessAllowed,
+        pageMiddleware,
+        publicPages = []
+      } = ui;
+
       ui = {
-        ...keystoneConfig.ui,
-        publicPages: [...(keystoneConfig.ui?.publicPages || []), ...publicPages],
-        getAdditionalFiles: [...(keystoneConfig.ui?.getAdditionalFiles || []), getAdditionalFiles],
-        pageMiddleware: async args =>
-          (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
+        ...ui,
+        publicPages: [...publicPages, ...defaultPublicPages],
+        getAdditionalFiles: [...getAdditionalFiles, defaultGetAdditionalFiles],
+        pageMiddleware: async (args) => {
+          if (!await authMiddleware(args)) return;
+          return pageMiddleware?.(args);
+        },
         enableSessionItem: true,
         isAccessAllowed: async (context: KeystoneContext) => {
           // Allow access to the adminMeta data from the /init path to correctly render that page
@@ -286,18 +300,16 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
             url?.pathname === '/init' &&
             url?.host === host &&
             (await context.sudo().query[listKey].count({})) === 0;
-          return (
-            accessingInitPage ||
-            (keystoneConfig.ui?.isAccessAllowed
-              ? keystoneConfig.ui.isAccessAllowed(context)
-              : context.session !== undefined)
-          );
+
+          if (accessingInitPage) return accessingInitPage;
+          return isAccessAllowed(context);
         },
       };
     }
 
-    if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
-    const session = withItemData(keystoneConfig.session);
+    const { session: _session } = keystoneConfig;
+    if (!_session) throw new TypeError('Missing .session configuration');
+    const session = withItemData(_session);
 
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
     const listConfig = keystoneConfig.lists[listKey];
