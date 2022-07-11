@@ -12,7 +12,7 @@ export type CreateRequestContext<TypeInfo extends BaseKeystoneTypeInfo> = (
 ) => Promise<KeystoneContext<TypeInfo>>;
 
 export type CreateContext = (args: {
-  sessionContext?: SessionContext<any>;
+  sessionContext?: SessionContext;
   sudo?: boolean;
   req?: IncomingMessage;
 }) => KeystoneContext;
@@ -22,7 +22,7 @@ export type SessionImplementation = {
     req: IncomingMessage,
     res: ServerResponse,
     createContext: CreateContext
-  ): Promise<SessionContext<any>>;
+  ): Promise<SessionContext>;
 };
 
 export type GraphQLResolver<Context extends KeystoneContext> = (

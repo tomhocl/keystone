@@ -2,26 +2,29 @@ import type { ServerResponse, IncomingMessage } from 'http';
 import type { JSONValue } from './utils';
 import { CreateContext } from '.';
 
-export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
-  // creates token from data, sets the cookie with token via res, returns token
+export type SessionStrategy<SessionData, StartSessionData = never> = {
+  // this function should create a new session, and return any relevant data
   start: (args: {
     res: ServerResponse;
-    data: StoredSessionData | StartSessionData;
+    data: StartSessionData;
     createContext: CreateContext;
-  }) => Promise<string>;
-  // resets the cookie via res
-  end: (args: {
-    req: IncomingMessage;
-    res: ServerResponse;
-    createContext: CreateContext;
-  }) => Promise<void>;
-  // -- this one is invoked at the start of every request
-  // reads the token, gets the data, returns it
+  }) => Promise<string>; // TODO: change to T
+
+  // this populates the session object
   get: (args: {
     req: IncomingMessage;
     createContext: CreateContext;
-  }) => Promise<StoredSessionData | undefined>;
-  disconnect?: () => Promise<void>;
+  }) => Promise<SessionData | undefined>;
+
+  // this function should end the session, by whatever means
+  end: (args: {
+    req: IncomingMessage;
+    res: ServerResponse;
+//      data?: StoredSessionData; // TODO: add
+    createContext: CreateContext;
+  }) => Promise<void>; // TODO: change to T2 = void
+
+  disconnect?: () => Promise<void>; // TODO: remove
 };
 
 export type SessionStore = {
