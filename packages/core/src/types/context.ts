@@ -7,8 +7,8 @@ import { GqlNames, BaseKeystoneTypeInfo } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
-  db: KeystoneDbAPI<TypeInfo['schemaCcc']>;
-  query: KeystoneSchemaPppAPI<TypeInfo['schemaCcc']>;
+  db: KeystoneDbAPI<TypeInfo['schemaPpp']>;
+  query: KeystoneSchemaPppAPI<TypeInfo['schemaPpp']>;
   graphql: KeystoneGraphQLAPI;
   sudo: () => KeystoneContext<TypeInfo>;
   exitSudo: () => KeystoneContext<TypeInfo>;

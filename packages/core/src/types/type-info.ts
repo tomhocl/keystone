@@ -21,6 +21,6 @@ export type KeystoneContextFromSchemaCccTypeInfo<SchemaCccTypeInfo extends BaseS
   KeystoneContext<SchemaCccTypeInfo['all']>;
 
 export type BaseKeystoneTypeInfo = {
-  schemaCcc: Record<string, BaseSchemaCccTypeInfo>;
+  schemaPpp: Record<string, BaseSchemaCccTypeInfo>;
   prisma: any;
 };
