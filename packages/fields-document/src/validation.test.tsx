@@ -27,8 +27,13 @@ const componentBlocks: Record<string, ComponentBlock> = {
     preview: () => null,
     label: '',
     schema: {
-      one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
-      many: fields.relationship({ label: '', listKey: 'Post', many: true, selection: 'something' }),
+      one: fields.relationship({ label: '', schemaCccKey: 'Post', selection: 'something' }),
+      many: fields.relationship({
+        label: '',
+        schemaCccKey: 'Post',
+        many: true,
+        selection: 'something',
+      }),
     },
   }),
   object: component({

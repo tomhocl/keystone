@@ -22,7 +22,7 @@ describe('<Pagination/>', () => {
         pageSize={10}
         currentPage={1}
         total={30}
-        schemaCcc={{ plural: 'Items', singular: 'Item' }}
+        list={{ plural: 'Items', singular: 'Item' }}
       />
     );
     screen.getByRole('navigation');
@@ -42,7 +42,7 @@ describe('<Pagination/>', () => {
           pageSize={10}
           currentPage={1}
           total={30}
-          schemaCcc={{ plural: 'Items', singular: 'Item' }}
+          list={{ plural: 'Items', singular: 'Item' }}
         />
       );
       expect(screen.getByLabelText('Previous page')).toHaveStyle({
@@ -63,7 +63,7 @@ describe('<Pagination/>', () => {
           pageSize={10}
           currentPage={3}
           total={30}
-          schemaCcc={{ plural: 'Items', singular: 'Item' }}
+          list={{ plural: 'Items', singular: 'Item' }}
         />
       );
       expect(screen.getByLabelText('Next page')).toHaveStyle({
@@ -87,7 +87,7 @@ describe('<Pagination/>', () => {
           pageSize={10}
           currentPage={1}
           total={30}
-          schemaCcc={{ plural: 'Items', singular: 'Item' }}
+          list={{ plural: 'Items', singular: 'Item' }}
         />
       );
       await userEvent.click(screen.getByLabelText('Next page'));
@@ -111,7 +111,7 @@ describe('<Pagination/>', () => {
           pageSize={10}
           currentPage={2}
           total={30}
-          schemaCcc={{ plural: 'Items', singular: 'Item' }}
+          list={{ plural: 'Items', singular: 'Item' }}
         />
       );
       await userEvent.click(screen.getByLabelText('Previous page'));

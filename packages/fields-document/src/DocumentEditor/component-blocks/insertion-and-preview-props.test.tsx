@@ -13,7 +13,7 @@ const objectProp = fields.object({
   prop: fields.text({ label: 'Prop' }),
   block: fields.child({ kind: 'block', placeholder: '' }),
   inline: fields.child({ kind: 'inline', placeholder: '' }),
-  many: fields.relationship({ label: 'Relationship', listKey: 'many', many: true }),
+  many: fields.relationship({ label: 'Relationship', schemaCccKey: 'many', many: true }),
   select: fields.select({
     label: 'Select',
     defaultValue: 'a',
@@ -24,7 +24,7 @@ const objectProp = fields.object({
   }),
   conditional: fields.conditional(fields.checkbox({ label: 'Conditional' }), {
     true: fields.child({ kind: 'block', placeholder: '' }),
-    false: fields.relationship({ label: 'Relationship', listKey: 'one' }),
+    false: fields.relationship({ label: 'Relationship', schemaCccKey: 'one' }),
   }),
   conditionalSelect: fields.conditional(
     fields.select({

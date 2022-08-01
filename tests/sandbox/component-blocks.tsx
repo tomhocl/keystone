@@ -406,7 +406,7 @@ export const componentBlocks = {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       authors: fields.relationship({
         label: 'Authors',
-        listKey: 'User',
+        schemaCccKey: 'User',
         many: true,
         selection: `posts(take: 10) { title }`,
       }),

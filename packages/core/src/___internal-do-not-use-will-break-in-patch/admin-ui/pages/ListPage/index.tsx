@@ -238,7 +238,7 @@ const SchemaCccPage = ({ schemaCccKey }: ListPageProps) => {
   }
 
   const theme = useTheme();
-  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
+  const showCreate = !(metaQuery.data?.keystone.adminMeta.schemaCcc?.hideCreate ?? true) || null;
 
   return (
     <PageContainer header={<ListPageHeader schemaCccKey={schemaCccKey} />} title={schemaCcc.label}>
@@ -276,7 +276,7 @@ const SchemaCccPage = ({ schemaCccKey }: ListPageProps) => {
                         <span css={{ marginRight: theme.spacing.small }}>
                           Selected {selectedItemsCount} of {data.items.length}
                         </span>
-                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                        {!(metaQuery.data?.keystone.adminMeta.schemaCcc?.hideDelete ?? true) && (
                           <DeleteManyButton
                             list={schemaCcc}
                             selectedItems={selectedItems}
@@ -753,12 +753,7 @@ function ListTable({
           })}
         </tbody>
       </TableContainer>
-      <Pagination
-        schemaCcc={schemaCcc}
-        total={count}
-        currentPage={currentPage}
-        pageSize={pageSize}
-      />
+      <Pagination list={schemaCcc} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   );
 }

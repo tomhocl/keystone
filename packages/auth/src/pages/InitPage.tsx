@@ -167,10 +167,10 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     fieldPaths.forEach(fieldPath => {
-      fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath];
+      fields[fieldPath] = adminMeta.schemaPpp[listKey].fields[fieldPath];
     });
     return fields;
-  }, [fieldPaths, adminMeta.lists, listKey]);
+  }, [fieldPaths, adminMeta.schemaPpp, listKey]);
 
   const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};

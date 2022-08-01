@@ -36,7 +36,7 @@ const componentBlocks = {
         prop: fields.text({ label: 'Prop' }),
         conditional: fields.conditional(fields.checkbox({ label: 'Conditional' }), {
           true: fields.child({ kind: 'block', placeholder: '' }),
-          false: fields.relationship({ label: 'Relationship', listKey: 'Something' }),
+          false: fields.relationship({ label: 'Relationship', schemaCccKey: 'Something' }),
         }),
       }),
     },

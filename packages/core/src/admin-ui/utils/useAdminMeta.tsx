@@ -68,7 +68,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       enableSignout: adminMeta.enableSignout,
       schemaPpp: {},
     };
-    adminMeta.schema.forEach(schemaCcc => {
+    adminMeta.schemaPpp.forEach(schemaCcc => {
       runtimeAdminMeta.schemaPpp[schemaCcc.key] = {
         ...schemaCcc,
         gqlNames: getGqlNames({

@@ -411,12 +411,12 @@ export const fields = {
     };
   },
   relationship<Many extends boolean | undefined = false>({
-    listKey,
+    schemaCccKey: listKey,
     selection,
     label,
     many,
   }: {
-    listKey: string;
+    schemaCccKey: string;
     label: string;
     selection?: string;
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
