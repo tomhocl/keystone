@@ -157,7 +157,7 @@ export const relationship =
       return fieldType({
         kind: 'relation',
         mode: 'many',
-        list: foreignschemaCccKey,
+        schemaCcc: foreignschemaCccKey,
         field: foreignFieldKey,
         relationName: config.db?.relationName,
       })({
@@ -207,7 +207,7 @@ export const relationship =
     return fieldType({
       kind: 'relation',
       mode: 'one',
-      list: foreignschemaCccKey,
+      schemaCcc: foreignschemaCccKey,
       field: foreignFieldKey,
       foreignKey: config.db?.foreignKey,
     })({

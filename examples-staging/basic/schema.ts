@@ -152,7 +152,7 @@ export const schemaPpp: Keystone.SchemaPpp = {
         relationships: {
           mention: {
             label: 'Mention',
-            listKey: 'User',
+            schemaCccKey: 'User',
           },
         },
         formatting: true,

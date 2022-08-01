@@ -257,14 +257,14 @@ type KeystoneMeta {
 type KeystoneAdminMeta {
   enableSignout: Boolean!
   enableSessionItem: Boolean!
-  lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
+  schemaPpp: [KeystoneAdminUIListMeta!]!
+  schemaCcc(key: String!): KeystoneAdminUIListMeta
 }
 
 type KeystoneAdminUIListMeta {
   key: String!
   itemQueryName: String!
-  listQueryName: String!
+  schemaCccQueryName: String!
   hideCreate: Boolean!
   hideDelete: Boolean!
   path: String!

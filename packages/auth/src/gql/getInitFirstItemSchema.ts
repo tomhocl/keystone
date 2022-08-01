@@ -5,14 +5,14 @@ import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'gr
 import { AuthGqlNames, InitFirstItemConfig } from '../types';
 
 export function getInitFirstItemSchema({
-  listKey,
+  schemaCccKey,
   fields,
   itemData,
   gqlNames,
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
 }: {
-  listKey: string;
+  schemaCccKey: string;
   fields: InitFirstItemConfig<any>['fields'];
   itemData: InitFirstItemConfig<any>['itemData'];
   gqlNames: AuthGqlNames;
@@ -23,7 +23,7 @@ export function getInitFirstItemSchema({
   }>;
 }) {
   const createInputConfig = assertInputObjectType(
-    graphQLSchema.getType(`${listKey}CreateInput`)
+    graphQLSchema.getType(`${schemaCccKey}CreateInput`)
   ).toConfig();
   const fieldsSet = new Set(fields);
   const initialCreateInput = graphql.wrap.inputObject(
@@ -45,7 +45,7 @@ export function getInitFirstItemSchema({
             throw new Error('No session implementation available on context');
           }
 
-          const dbItemAPI = context.sudo().db[listKey];
+          const dbItemAPI = context.sudo().db[schemaCccKey];
           const count = await dbItemAPI.count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');
@@ -56,7 +56,10 @@ export function getInitFirstItemSchema({
           // (this is also mostly fine, the chance that people are using things where
           // the input value can't round-trip like the Upload scalar here is quite low)
           const item = await dbItemAPI.createOne({ data: { ...data, ...itemData } });
-          const sessionToken = await context.startSession({ listKey, itemId: item.id.toString() });
+          const sessionToken = await context.startSession({
+            listKey: schemaCccKey,
+            itemId: item.id.toString(),
+          });
           return { item, sessionToken };
         },
       }),

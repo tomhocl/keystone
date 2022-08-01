@@ -77,7 +77,7 @@ export const getSchemaExtension = ({
     }
     const baseSchema = getBaseAuthSchema({
       identityField,
-      listKey,
+      schemaCccKey: listKey,
       secretField,
       gqlNames,
       secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
@@ -90,7 +90,7 @@ export const getSchemaExtension = ({
     let ast;
     let query = `query($id: ID!) { ${
       getGqlNames({
-        listKey,
+        schemaCccKey: listKey,
         // this isn't used to get the itemQueryName and we don't know it here
         pluralGraphQLName: '',
       }).itemQueryName
@@ -116,7 +116,7 @@ export const getSchemaExtension = ({
       baseSchema.extension,
       initFirstItem &&
         getInitFirstItemSchema({
-          listKey,
+          schemaCccKey: listKey,
           fields: initFirstItem.fields,
           itemData: initFirstItem.itemData,
           gqlNames,
@@ -126,7 +126,7 @@ export const getSchemaExtension = ({
       passwordResetLink &&
         getPasswordResetSchema({
           identityField,
-          listKey,
+          listKey: listKey,
           secretField,
           passwordResetLink,
           gqlNames,
@@ -139,7 +139,7 @@ export const getSchemaExtension = ({
       magicAuthLink &&
         getMagicAuthLinkSchema({
           identityField,
-          listKey,
+          listKey: listKey,
           magicAuthLink,
           gqlNames,
           magicAuthTokenSecretFieldImpl: getSecretFieldImpl(base.schema, listKey, 'magicAuthToken'),

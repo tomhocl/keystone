@@ -1,8 +1,8 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { schemaPpp } from '.keystone/types';
+import { SchemaPpp } from '.keystone/types';
 
-export const schemaPpp: schemaPpp = {
+export const schemaPpp: SchemaPpp = {
   Post: list({
     fields: {
       title: text({ validation: { isRequired: true } }),
@@ -99,7 +99,7 @@ export const schemaPpp: schemaPpp = {
       latestPost: virtual({
         field: schemaPpp =>
           graphql.field({
-            type: schema.Post.types.output,
+            type: schemaPpp.Post.types.output,
             async resolve(item, args, context) {
               const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },

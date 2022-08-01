@@ -5,14 +5,14 @@ import { AuthGqlNames, SecretFieldImpl } from '../types';
 import { validateSecret } from '../lib/validateSecret';
 
 export function getBaseAuthSchema<I extends string, S extends string>({
-  listKey,
+  schemaCccKey: listKey,
   identityField,
   secretField,
   gqlNames,
   secretFieldImpl,
   base,
 }: {
-  listKey: string;
+  schemaCccKey: string;
   identityField: I;
   secretField: S;
   gqlNames: AuthGqlNames;
