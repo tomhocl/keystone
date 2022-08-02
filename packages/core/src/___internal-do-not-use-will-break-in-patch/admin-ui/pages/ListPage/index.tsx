@@ -125,7 +125,7 @@ function useQueryParamsFromLocalStorage(schemaCccKey: string) {
   return { resetToDefaults };
 }
 
-export const getSchemaCccPage = (props: ListPageProps) => () => <SchemaCccPage {...props} />;
+export const getListPage = (props: ListPageProps) => () => <SchemaCccPage {...props} />;
 
 const SchemaCccPage = ({ schemaCccKey }: ListPageProps) => {
   const schemaCcc = useSchemaCcc(schemaCccKey);
