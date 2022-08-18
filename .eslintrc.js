@@ -32,14 +32,6 @@ module.exports = {
     'no-unused-expressions': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      {
-        args: 'after-used',
-        ignoreRestSiblings: true,
-        vars: 'all',
-      },
-    ],
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -127,6 +119,19 @@ module.exports = {
       files: ['packages/fields/src/**/*.{js,ts,tsx}'],
       rules: {
         'import/no-commonjs': 'error',
+      },
+    },
+    {
+      files: ['**/*.js'],
+      rules: {
+        'no-unused-vars': [
+          'error',
+          {
+            args: 'after-used',
+            ignoreRestSiblings: true,
+            vars: 'all',
+          },
+        ],
       },
     },
     {
