@@ -5,7 +5,8 @@ import { Server } from 'http';
 import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
-import type { KeystoneConfig, KeystoneContext } from './types';
+import type { KeystoneConfig, KeystoneContext, BaseKeystoneTypeInfo } from './types';
+
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -21,28 +22,29 @@ export type GraphQLRequest = (arg: {
   operationName?: string;
 }) => Test;
 
-export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
-  context: Context;
+export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
+  context: KeystoneContext<TypeInfo>;
   graphQLRequest: GraphQLRequest;
   app: express.Express;
   server: Server;
 };
 
-export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
+export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  testArgs: TestArgs<Context>;
+  testArgs: TestArgs<TypeInfo>;
 };
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 const _alreadyGeneratedProjects = new Set<string>();
-export async function setupTestEnv<Context extends KeystoneContext>({
+
+export async function setupTestEnv<KeystoneTypeInfo extends BaseKeystoneTypeInfo>({
   config: _config,
 }: {
-  config: KeystoneConfig;
-}): Promise<TestEnv<Context>> {
+  config: KeystoneConfig<KeystoneTypeInfo>;
+}): Promise<TestEnv<KeystoneTypeInfo>> {
   // Force the UI to always be disabled.
   const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
@@ -85,30 +87,18 @@ export async function setupTestEnv<Context extends KeystoneContext>({
     disconnect: async () => {
       await Promise.all([disconnect(), apolloServer.stop()]);
     },
-    testArgs: {
-      context: createContext() as Context,
-      graphQLRequest,
-      app,
-      server,
-    },
+    testArgs: { context: createContext() as any, graphQLRequest, app, server },
   };
 }
 
-export function setupTestRunner<Context extends KeystoneContext>({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
   config,
 }: {
-  config: KeystoneConfig;
+  config: KeystoneConfig<TypeInfo>;
 }) {
-  type TestArgs = {
-    context: Context;
-    graphQLRequest: GraphQLRequest;
-    app: express.Express;
-    server: Server;
-  };
-
-  return (testFn: (testArgs: TestArgs) => Promise<void>) => async () => {
+  return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
+    const { connect, disconnect, testArgs } = await setupTestEnv<TypeInfo>({ config });
     await connect();
 
     try {

@@ -1,5 +1,6 @@
 import { KeystoneContext } from '../../../../types';
 import { decimal } from '..';
+import { TypeInfoForOnlyLists } from '../../../../../../../tests/api-tests/utils';
 
 export const name = 'Decimal';
 export const typeFunction = decimal;
@@ -86,15 +87,17 @@ export const crudTests = (keystoneTestWrapper: any) => {
   ]) {
     test(
       `saves when the value is exactly the ${name}`,
-      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
-        const result = await context.query.Test.createOne({
-          data: {
-            price: value,
-          },
-          query: 'price',
-        });
-        expect(result).toEqual({ price: value });
-      })
+      keystoneTestWrapper(
+        async ({ context }: { context: KeystoneContext<TypeInfoForOnlyLists> }) => {
+          const result = await context.query.Test.createOne({
+            data: {
+              price: value,
+            },
+            query: 'price',
+          });
+          expect(result).toEqual({ price: value });
+        }
+      )
     );
   }
 };

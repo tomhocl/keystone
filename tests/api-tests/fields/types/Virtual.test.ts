@@ -1,7 +1,8 @@
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields';
 import { BaseFields, list, graphql } from '@keystone-6/core';
+import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, TypeInfoForOnlyLists } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
@@ -92,7 +93,8 @@ describe('Virtual field type', () => {
                       name: 'Author',
                       types: [lists.Person.types.output, lists.Organisation.types.output],
                     }),
-                    async resolve(rootVal, args, context) {
+                    async resolve(rootVal, args, _context) {
+                      const context = _context as KeystoneContext<TypeInfoForOnlyLists>;
                       const [personAuthors, organisationAuthors] = await Promise.all([
                         context.db.Person.findMany({
                           where: {
