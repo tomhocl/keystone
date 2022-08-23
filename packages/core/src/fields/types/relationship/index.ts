@@ -90,9 +90,9 @@ export const relationship =
       getAdminMeta: (
         adminMetaRoot: AdminMetaRootVal
       ): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
-        if (!meta.lists[foreignListKey]) {
+        if (!meta.models[foreignListKey]) {
           throw new Error(
-            `The ref [${ref}] on relationship [${meta.modelKey}.${meta.fieldKey}] is invalid`
+            `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
           );
         }
         if (config.ui?.displayMode === 'cards') {
@@ -100,12 +100,12 @@ export const relationship =
           // in newer versions of keystone, it will be there and it will not be there for older versions of keystone.
           // this is so that relationship fields doesn't break in confusing ways
           // if people are using a slightly older version of keystone
-          const currentField = adminMetaRoot.listsByKey[meta.modelKey].fields.find(
+          const currentField = adminMetaRoot.modelByKey[meta.modelKey].fields.find(
             x => x.path === meta.fieldKey
           );
           if (currentField) {
             const allForeignFields = new Set(
-              adminMetaRoot.listsByKey[foreignListKey].fields.map(x => x.path)
+              adminMetaRoot.modelByKey[foreignListKey].fields.map(x => x.path)
             );
             for (const [configOption, foreignFields] of [
               ['ui.cardFields', config.ui.cardFields],
@@ -136,23 +136,23 @@ export const relationship =
                 inlineCreate: config.ui.inlineCreate ?? null,
                 inlineEdit: config.ui.inlineEdit ?? null,
                 inlineConnect: config.ui.inlineConnect ?? false,
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField: adminMetaRoot.modelByKey[foreignListKey].labelField,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField: adminMetaRoot.modelByKey[foreignListKey].labelField,
               }),
         };
       },
     };
-    if (!meta.lists[foreignListKey]) {
+    if (!meta.models[foreignListKey]) {
       throw new Error(
         `Unable to resolve related list '${foreignListKey}' from ${meta.modelKey}.${meta.fieldKey}`
       );
     }
-    const listTypes = meta.lists[foreignListKey].types;
+    const listTypes = meta.models[foreignListKey].types;
     if (config.many) {
       return fieldType({
         kind: 'relation',

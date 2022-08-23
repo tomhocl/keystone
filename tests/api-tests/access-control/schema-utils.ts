@@ -1,5 +1,5 @@
 import { relationship, text } from '@keystone-6/core/fields';
-import { list, ListSchemaConfig } from '@keystone-6/core';
+import { list, ModelsConfig } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { apiTestConfig } from '../utils';
 
@@ -100,7 +100,7 @@ const createRelatedFields = (config: ListConfig) => ({
   [`${getListPrefix(config)}many`]: relationship({ ref: getListName(config), many: true }),
 });
 
-const models: ListSchemaConfig = {};
+const models: ModelsConfig = {};
 
 listConfigVariables.forEach(config => {
   models[getListName(config)] = list({

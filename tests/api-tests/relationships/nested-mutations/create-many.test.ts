@@ -299,7 +299,7 @@ describe('with access control', () => {
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
         const message =
-          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+          "Access denied: You cannot perform the 'create' operation on the model 'NoteNoCreate'.";
         expectSingleRelationshipError(
           errors,
           'createUserToNotesNoCreate',
@@ -348,7 +348,7 @@ describe('with access control', () => {
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
         const message =
-          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+          "Access denied: You cannot perform the 'create' operation on the model 'NoteNoCreate'.";
         expectSingleRelationshipError(
           errors,
           'updateUserToNotesNoCreate',

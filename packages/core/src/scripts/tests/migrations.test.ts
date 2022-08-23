@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { ListSchemaConfig } from '../../types';
+import { ModelsConfig } from '../../types';
 import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
 import { config, list } from '../..';
@@ -23,7 +23,7 @@ const basicModels = {
 
 const dbUrl = 'file:./app.db';
 
-const basicKeystoneConfig = (useMigrations: boolean, models: ListSchemaConfig = basicModels) => ({
+const basicKeystoneConfig = (useMigrations: boolean, models: ModelsConfig = basicModels) => ({
   kind: 'config' as const,
   config: config({
     db: { provider: 'sqlite', url: dbUrl, useMigrations },

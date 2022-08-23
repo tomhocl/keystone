@@ -5,7 +5,7 @@ import {
   CommonFieldConfig,
   FieldTypeFunc,
   fieldType,
-  ListGraphQLTypes,
+  ModelGraphQLTypes,
   getGqlNames,
 } from '../../../types';
 import { graphql } from '../../..';
@@ -23,7 +23,7 @@ export type VirtualFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
     field:
       | VirtualFieldGraphQLField<ModelTypeInfo['item']>
       | ((
-          models: Record<string, ListGraphQLTypes>
+          models: Record<string, ModelGraphQLTypes>
         ) => VirtualFieldGraphQLField<ModelTypeInfo['item']>);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
@@ -50,7 +50,7 @@ export const virtual =
     ...config
   }: VirtualFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
-    const usableField = typeof field === 'function' ? field(meta.lists) : field;
+    const usableField = typeof field === 'function' ? field(meta.models) : field;
     const namedType = getNamedType(usableField.type.graphQLType);
     const hasRequiredArgs =
       usableField.args &&
@@ -68,7 +68,7 @@ export const virtual =
           `When setting ui.query, it is interpolated into a GraphQL query like this:\n` +
           `query {\n` +
           `  ${
-            getGqlNames({ listKey: meta.modelKey, pluralGraphQLName: '' }).itemQueryName
+            getGqlNames({ modelKey: meta.modelKey, pluralGraphQLName: '' }).itemQueryName
           }(where: { id: "..." }) {\n` +
           `    ${meta.fieldKey}\${ui.query}\n` +
           `  }\n` +

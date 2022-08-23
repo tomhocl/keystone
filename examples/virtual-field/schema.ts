@@ -96,11 +96,11 @@ export const models: Models = {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      // A virtual field which returns a type derived from a Keystone list.
+      // A virtual field which returns a type derived from a Keystone model.
       latestPost: virtual({
-        field: lists =>
+        field: models =>
           graphql.field({
-            type: lists.Post.types.output,
+            type: models.Post.types.output,
             async resolve(item, args, _context) {
               const context = _context as Context;
               const { posts } = await context.query.Author.findOne({

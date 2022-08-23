@@ -39,9 +39,9 @@ test(
           __typename: 'KeystoneAdminMeta',
           enableSessionItem: false,
           enableSignout: false,
-          lists: [
+          models: [
             {
-              __typename: 'KeystoneAdminUIListMeta',
+              __typename: 'KeystoneAdminUIModelMeta',
               description: null,
               fields: [
                 {
@@ -88,11 +88,10 @@ test(
               ],
               initialColumns: ['name'],
               initialSort: null,
-              itemQueryName: 'User',
               key: 'User',
               label: 'Users',
               labelField: 'name',
-              listQueryName: 'Users',
+              graphqlPlural: 'Users',
               pageSize: 50,
               path: 'users',
               plural: 'Users',
@@ -129,7 +128,7 @@ test(
         query {
           keystone {
             adminMeta {
-              list(key: "Test") {
+              model(key: "Test") {
                 label
                 singular
                 plural
@@ -140,6 +139,6 @@ test(
         }
       `,
     });
-    expect(res.data!.keystone.adminMeta.list).toEqual(names);
+    expect(res.data!.keystone.adminMeta.model).toEqual(names);
   })
 );

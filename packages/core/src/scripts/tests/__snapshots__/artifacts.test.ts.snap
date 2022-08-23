@@ -133,7 +133,7 @@ export declare namespace Models {
 export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
 
 export type TypeInfo = {
-  lists: {
+  models: {
   readonly Todo: Models.Todo.TypeInfo;
   };
   prisma: import('.prisma/client').PrismaClient;
@@ -142,8 +142,8 @@ export type TypeInfo = {
 type __TypeInfo = TypeInfo;
 
 export type Models = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
-} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+  [Key in keyof TypeInfo['models']]?: import('@keystone-6/core').ModelConfig<TypeInfo['models'][Key], any>
+} & Record<string, import('@keystone-6/core').ModelConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 

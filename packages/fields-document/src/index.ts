@@ -106,7 +106,7 @@ export const document =
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type document");
     }
-    const lists = new Set(Object.keys(meta.lists));
+    const lists = new Set(Object.keys(meta.models));
     for (const [name, block] of Object.entries(componentBlocks)) {
       try {
         assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists);
@@ -188,7 +188,7 @@ function normaliseRelationships(
   if (configRelationships) {
     Object.keys(configRelationships).forEach(key => {
       const relationship = configRelationships[key];
-      if (meta.lists[relationship.listKey] === undefined) {
+      if (meta.models[relationship.listKey] === undefined) {
         throw new Error(
           `An inline relationship ${relationship.label} (${key}) in the field at ${meta.modelKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
         );
