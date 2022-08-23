@@ -18,6 +18,18 @@ const publicPackages = [
   '@keystone-6/session-store-redis',
 ];
 
+const cves = [
+  {
+    id: 'CVE-2022-NNNN',
+    href: 'https://github.com/advisories/GHSA-...',
+    upstream: true,
+    description: `
+      An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
+      We have upgraded to a version of \`YYY\` package to a version that doesn't use \`XXX\`.
+    `
+  }
+];
+
 function gitCommitsSince(tag) {
   const { stdout } = spawnSync('git', ['rev-list', `^${tag}`, 'HEAD']);
   return stdout
@@ -134,6 +146,11 @@ function formatChange({ packages, summary, pull, user }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`;
 }
 
+function formatCVE ({ id, href, upstream, description }) {
+  description = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  return `- [\`${id}\`](${href}) - ${description}`;
+}
+
 function link(pull) {
   return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`;
 }
@@ -177,13 +194,22 @@ async function generateGitHubReleaseText(previousTag) {
     output.push(...[`#### Bug Fixes`, ...fixes.map(formatChange), ``]);
   }
 
+  if (cves.length) {
+    output.push(...[
+      `#### :rotating_light: Security Updates`,
+      `We have identified and fixed ${cves.length} ${cves.some(x => x.upstream) ? 'upstream ': ''}security vulnerabilities`,
+      ...cves.map(formatCVE),
+      ``
+    ]);
+  }
+
   const first = changes.filter(x => x.first);
   const unattributed = changes.filter(x => !x.type && !x.first);
 
   if (first.length || unattributed.length) {
     const listf = groupPullsByUser(first);
 
-    output.push(`#### :seedling: New Contributors :seedling:`);
+    output.push(`#### :seedling: New Contributors`);
     output.push(
       `Thanks to the following developers for making their first contributions to the project!`
     );
@@ -194,7 +220,7 @@ async function generateGitHubReleaseText(previousTag) {
   if (unattributed.length) {
     const listu = groupPullsByUser(unattributed);
 
-    output.push(`#### :blue_heart: Acknowledgements :blue_heart:`);
+    output.push(`#### :blue_heart: Acknowledgements `);
     output.push(
       `Lastly, thanks to ${listu
         .map(({ user, pulls }) => `@${user} (${pulls.map(link).join(',')})`)
