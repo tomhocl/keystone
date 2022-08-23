@@ -9,6 +9,10 @@ export async function validateSecret(
   secret: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<{ success: false } | { success: true; item: { id: any; [prop: string]: any } }> {
+  if (dbItemAPI.kind === 'singleton') {
+    throw new Error('You cannot use a singleton to authenticate people');
+  }
+
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
   if (!item || !item[secretField]) {
     // See "Identity Protection" in the README as to why this is a thing

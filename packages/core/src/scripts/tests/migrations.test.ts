@@ -141,6 +141,7 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(false, {
         Todo: {
+          kind: 'list',
           fields: {},
         },
       }),
@@ -187,6 +188,7 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(false, {
         Todo: {
+          kind: 'list',
           fields: {},
         },
       }),
@@ -312,6 +314,7 @@ describe('useMigrations: true', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          kind: 'list',
           fields: {
             title: text(),
             isComplete: checkbox(),
@@ -383,6 +386,7 @@ describe('useMigrations: true', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          kind: 'list',
           fields: {},
         },
       }),
@@ -574,6 +578,7 @@ describe('useMigrations: true', () => {
       ...dbFiles,
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          kind: 'list',
           fields: {
             title: text(),
             isComplete: checkbox(),

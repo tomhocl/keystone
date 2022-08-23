@@ -1,0 +1,133 @@
+import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+
+# Singletons
+
+In Keystone, a Singleton is a special kind of schema type that can contain only one entry. This kind of schema type is useful for things like a settings page, header or footer information,
+or any data that only needs one instance.
+
+## Configuration
+
+As described in the [Schema API docs](../api/schema) Keystone has two kinds of schema types, a list (`kind: 'list'`) and a singleton (`kind: 'singleton'`).
+The recommended way to configure these is by using the `list()` and `singleton()` helper functions.
+
+Singletons are configured in the same way as a standard list but with a few differences in configuration options.
+
+```typescript
+import { config, singleton } from '@keystone-6/core';
+
+export default config({
+  schema: {
+    SingletonName: singleton({
+      fields: { /* ... */ },
+      access: { /* ... */ },
+      ui: { /* ... */ },
+      hooks: { /* ... */ },
+      graphql: { /* ... */ },
+      db: { /* ... */ },
+      description: '...',
+    }),
+    /* ... */
+  }),
+  /* ... */
+};
+```
+
+### Fields
+
+The `fields` object remains the same across both lists and singletons. See [Fields API Docs](../api/fields) for more info on field configuration.
+
+### Access Control
+
+While a singleton can only have one entry, the `access` object still accepts a `filter` access control to enable filtering out of the item based on content within the item.
+
+```typescript
+import { config, singleton } from '@keystone-6/core';
+
+export default config({
+  schema: {
+    SingletonName: singleton({
+      access: {
+        operation: {
+            query: ({ session, context, listKey, operation }) => true,
+            update: ({ session, context, listKey, operation }) => true
+          },
+          filter: {
+            query: ({ session, context, listKey, operation }) => {
+              // TODO: give a better example for these filter level access control
+              return { isReadable: { equals: true } };
+            },
+            update: ({ session, context, listKey, operation }) => {
+              return { isUpdatable: { equals: true } };
+            },
+          },
+          item: {
+            update: ({ session, context, listKey, operation, inputData, item }) => true,
+          }
+      }
+    })
+  }
+})
+```
+
+?> Note: While the `operation` variable is provided the only value that will ever be provided for a singleton list is `'update'`
+
+### Hooks
+
+Differences in Hooks to Standard List
+
+- no `validateDelete`
+- no `create` operation??
+
+### UI config
+
+- no list view
+- hideCreate, hideDelete, createView, searchFields don't exist
+
+### GraphQL Config
+
+- queryLimits
+- omit only accepts `query` and `update` or true to omit both
+
+## Admin UI
+
+- No create or delete
+- no list view
+- clicking on the nav goes to the item
+
+## Graphql
+
+- no create or delete mutations
+- Only update with no `where`
+- no plural queries
+
+## Query and DB API
+
+- no findMany
+- no createOne, createMany etc
+
+## Filter
+
+- no filtering
+
+## Database
+
+- ID of 1
+
+## Relationships
+
+- Can relate _from_ a Singleton but not _to_ a Singleton
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Schema API"
+    href="../apis/schema"
+    >
+    Documentation for the Schema API
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="A guide to the Singleton List type">{children}</Markdown>;

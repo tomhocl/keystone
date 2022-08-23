@@ -17,6 +17,12 @@ export async function createAuthToken(
 ): Promise<
   { success: false } | { success: true; itemId: string | number | bigint; token: string }
 > {
+  if (dbItemAPI.kind !== 'list') {
+    throw new Error(
+      `Authentication can only be done with standard lists, and is currently set to a singleton`
+    );
+  }
+
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
   if (item) {
     return { success: true, itemId: item.id, token: generateToken(20) };

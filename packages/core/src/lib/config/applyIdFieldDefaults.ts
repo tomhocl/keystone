@@ -20,7 +20,7 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['mo
       throw new Error(
         `A field with the \`id\` path is defined in the fields object on the ${JSON.stringify(
           key
-        )} list. This is not allowed, use the idField option instead.`
+        )} model. This is not allowed, use the idField option instead.`
       );
     }
     if (
@@ -29,7 +29,7 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['mo
       config.db.provider === 'sqlite'
     ) {
       throw new Error(
-        `BigInt autoincrements are not supported on SQLite but they are configured at db.idField on the ${key} list`
+        `BigInt autoincrements are not supported on SQLite but they are configured at db.idField on the ${key} model`
       );
     }
     const idField = idFieldType(modelConfig.db?.idField ?? defaultIdField);

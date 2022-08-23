@@ -28,20 +28,24 @@ export function ItemPageHeader(props: { list: ListMeta; label: string }) {
           minWidth: 0,
         }}
       >
-        <Heading type="h3">
-          <Link href={`/${props.list.path}`} css={{ textDecoration: 'none' }}>
-            {props.list.label}
-          </Link>
-        </Heading>
-        <div
-          css={{
-            color: palette.neutral500,
-            marginLeft: spacing.xsmall,
-            marginRight: spacing.xsmall,
-          }}
-        >
-          <ChevronRightIcon />
-        </div>
+        {props.model.kind === 'list' && (
+          <React.Fragment>
+            <Heading type="h3">
+              <Link href={`/${props.model.path}`} css={{ textDecoration: 'none' }}>
+                {props.model.label}
+              </Link>
+            </Heading>
+            <div
+              css={{
+                color: palette.neutral500,
+                marginLeft: spacing.xsmall,
+                marginRight: spacing.xsmall,
+              }}
+            >
+              <ChevronRightIcon />
+            </div>
+          </React.Fragment>
+        )}
         <Heading
           as="h1"
           type="h3"

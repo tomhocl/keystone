@@ -15,7 +15,7 @@ The `config` function accepts an object representing all the configurable parts 
 
 ```typescript
 export default config({
-  lists: { /* ... */ },
+  models: { /* ... */ },
   db: { /* ... */ },
   ui: { /* ... */ },
   server: { /* ... */ },
@@ -32,9 +32,9 @@ We will cover each of these options below.
 The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-6/core/types`.
 This type definition should be considered the source of truth for the available configuration options.
 
-## lists
+## Models
 
-The `lists` config option is where you define the data model, or schema, of the Keystone system.
+The `models` config option is where you define the data model, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
 This is where you define and configure the `lists` and their `fields` of the data model.
 See the [Schema API](./schema) docs for details on how to use this function.
@@ -44,7 +44,7 @@ import type { ListSchemaConfig } from '@keystone-6/core/types';
 import { config } from '@keystone-6/core';
 
 export default config({
-  lists: { /* ... */ },
+  models: { /* ... */ },
   /* ... */
 });
 ```

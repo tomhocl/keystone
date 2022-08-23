@@ -162,6 +162,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/choosing-a-database">
           Choosing a Database <Badge look="success">New</Badge>
         </NavItem>
+        <NavItem href="/docs/guides/singletons">
+          Singletons <Badge look="success">New</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/filters">
           Query Filters <Badge look="success">Updated</Badge>
         </NavItem>

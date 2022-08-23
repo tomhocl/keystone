@@ -4,13 +4,14 @@ description: "Reference docs for Keystone’s Schema API, which defines the data
 ---
 
 The `lists` property of the [system configuration](./config) object is where you define the data model, or schema, of your Keystone system.
-It accepts an object with list names as keys, and `list()` configurations as values.
+It accepts an object with list names as keys, and `ListConfig` as values. Keystone provides helper functions - `list()` and `singleton()` -
+that perform validation and type checking, which can be provided as values.
 
 ```typescript
-import { config, list } from '@keystone-6/core';
+import { config, list, singleton } from '@keystone-6/core';
 
 export default config({
-  lists: ({
+  models: {
     ListName: list({
       fields: { /* ... */ },
       access: { /* ... */ },
@@ -22,15 +23,33 @@ export default config({
       defaultIsFilterable: false,
       defaultIsOrderable: false,
     }),
+    SingletonName: singleton({
+      fields: { /* ... */ },
+      access: { /* ... */ },
+      ui: { /* ... */ },
+      hooks: { /* ... */ },
+      graphql: { /* ... */ },
+      db: { /* ... */ },
+      description: '...',
+    }),
     /* ... */
   }),
   /* ... */
-});
+};
 ```
 
-This document will explain the configuration options which can be used with the `list()` function.
+This document will explain the configuration options that are available in `ModelConfig` and can be provided to the `list()` and `singleton()` functions.
 
-Options:
+## Model Types - Lists and Singletons
+
+Keystone has two kinds of models, the first is a list that uses the `list()` function - or `kind: 'list'` if you are not using the helper function - and the second
+type is a [singleton](<https://en.wikipedia.org/wiki/Singleton_(mathematics)>) that uses the `singleton()` function - or `kind: 'singleton'`, a singleton list will only support one entry.
+
+Both list types are configured in the same way and have most of the same options, with singletons not having options and functions relating to multiple entries
+(ie filtering, `findMany`, `create`). As singletons have a specific use case, and most models will be a list, all our documentation is based on using a standard list.
+For more details on singletons and how they differ from a standard list see [our Singleton guide](../guides/singletons).
+
+## List Options:
 
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
@@ -45,7 +64,7 @@ import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
-  lists: {
+  models: {
     ListName: list({
       fields: {
         fieldName: text({ /* ... */ }),
@@ -115,7 +134,7 @@ import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields`;
 
 export default config({
-  lists: {
+  models: {
     ListName: list({
       fields: { name: text({ /* ... */ }) },
       ui: {
@@ -178,7 +197,7 @@ import { CacheScope } from 'apollo-cache-control';
 import { config, list } from '@keystone-6/core';
 
 export default config({
-  lists: {
+  models: {
     ListName: list({
       graphql: {
         description: '...',
@@ -211,7 +230,7 @@ Options:
 import { config, list } from '@keystone-6/core';
 
 export default config({
-  lists: {
+  models: {
     ListName: list({
       db: {
         idField: { kind: 'uuid' },

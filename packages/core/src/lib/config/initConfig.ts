@@ -7,7 +7,7 @@ import { applyIdFieldDefaults } from './applyIdFieldDefaults';
   needs to be run on Keystone Config before it can be used.
 */
 
-export function initConfig(config: KeystoneConfig) {
+export function initConfig(config: KeystoneConfig<any>) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new Error(
       'Invalid db configuration. Please specify db.provider as either "sqlite", "postgresql" or "mysql"'

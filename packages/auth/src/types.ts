@@ -1,4 +1,4 @@
-import { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types';
+import { BaseModelTypeInfo, KeystoneContext } from '@keystone-6/core/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -35,7 +35,7 @@ export type AuthTokenTypeConfig = {
   tokensValidForMins?: number;
 };
 
-export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type AuthConfig<ListTypeInfo extends BaseModelTypeInfo> = {
   /** The key of the list to authenticate users with */
   listKey: ListTypeInfo['key'];
   /** The path of the field the identity is stored in; must be text-ish */
@@ -52,7 +52,7 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   sessionData?: string;
 };
 
-export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type InitFirstItemConfig<ListTypeInfo extends BaseModelTypeInfo> = {
   /** Array of fields to collect, e.g ['name', 'email', 'password'] */
   fields: readonly ListTypeInfo['fields'][];
   /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
@@ -67,3 +67,15 @@ export type SecretFieldImpl = {
   generateHash: (secret: string) => Promise<string>;
   compare: (secret: string, hash: string) => Promise<string>;
 };
+
+export function getListDbAPI(context: KeystoneContext, listKey: string) {
+  const db = context.db[listKey];
+  if (db.kind === 'list') return db;
+  throw new Error(`${listKey} is not a list`);
+}
+
+export function getListQueryAPI(context: KeystoneContext, listKey: string) {
+  const query = context.query[listKey];
+  if (query.kind === 'list') return query;
+  throw new Error(`${listKey} is not a list`);
+}
