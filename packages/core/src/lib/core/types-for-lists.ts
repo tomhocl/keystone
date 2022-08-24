@@ -54,7 +54,7 @@ type CommonInitialisedModel = {
   access: ResolvedListAccessControl;
   hooks: ListHooks<BaseModelTypeInfo>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
-  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
+  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined; // TODO: remove for singletons?
   maxResults: number;
   modelKey: string;
   models: Record<string, InitialisedModel>;
