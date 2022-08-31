@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        index: [0, 1, 2, 3, 4]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
         env:
-          CI_NODE_TOTAL: 9
+          CI_NODE_TOTAL: 5
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        index: [0, 1, 2, 3, 4]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -57,7 +57,7 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
         env:
-          CI_NODE_TOTAL: 9
+          CI_NODE_TOTAL: 5
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: sqlite
           DATABASE_URL: file:./dev.db
@@ -78,7 +78,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        index: [0, 1, 2, 3, 4]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -88,7 +88,7 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
         env:
-          CI_NODE_TOTAL: 9
+          CI_NODE_TOTAL: 5
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: mysql
           DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
