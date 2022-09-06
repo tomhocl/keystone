@@ -1,6 +1,5 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
-
 import { Lists } from '.keystone/types';
 
 import { text } from './1-text-field';
