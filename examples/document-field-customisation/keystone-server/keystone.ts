@@ -5,7 +5,6 @@ import { Context, TypeInfo } from '.keystone/types';
 import { seedDatabase } from './src/seed';
 import { lists } from './src/schema';
 
-
 const db: KeystoneConfig<TypeInfo>['db'] = {
   provider: 'sqlite',
   // You should use migrations in production environments
