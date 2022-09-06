@@ -1,5 +1,5 @@
+import type { Context } from '.keystone/types';
 import { authors, posts } from './data';
-import { Context } from '.keystone/types';
 
 type AuthorProps = {
   name: string;
