@@ -3,8 +3,9 @@ import { allowAll } from '@keystone-6/core/access';
 import { relationship, text, timestamp } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import type { KeystoneConfig } from '@keystone-6/core/types';
-import { componentBlocks } from './component-blocks';
 import { TypeInfo } from '.keystone/types';
+
+import { componentBlocks } from './component-blocks';
 
 export const lists: KeystoneConfig<TypeInfo>['lists'] = {
   User: list({
