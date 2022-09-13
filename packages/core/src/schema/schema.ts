@@ -4,7 +4,6 @@ import { mergeSchemas } from '@graphql-tools/schema';
 import type {
   BaseFields,
   BaseListTypeInfo,
-  ExtendGraphqlSchema,
   GraphQLSchemaExtension,
   KeystoneConfig,
   KeystoneContext,
@@ -40,6 +39,6 @@ export function gql(strings: TemplateStringsArray) {
 export function graphQLSchemaExtension<Context extends KeystoneContext>({
   typeDefs,
   resolvers,
-}: GraphQLSchemaExtension<Context>): ExtendGraphqlSchema {
+}: GraphQLSchemaExtension<Context>) {
   return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

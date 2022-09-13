@@ -1,4 +1,4 @@
-import { ExtendGraphqlSchema, getGqlNames } from '@keystone-6/core/types';
+import { getGqlNames } from '@keystone-6/core/types';
 
 import {
   assertObjectType,
@@ -58,7 +58,7 @@ export const getSchemaExtension = ({
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
   sessionData: string;
-}): ExtendGraphqlSchema =>
+}) =>
   graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
       base.schema.getType(`${listKey}WhereUniqueInput`)
