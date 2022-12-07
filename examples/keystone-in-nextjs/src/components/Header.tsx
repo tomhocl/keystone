@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gql } from 'graphql-request';
+import Link from 'next/link';
 import { client } from '../util/request';
 
 export function Header() {
@@ -63,6 +64,7 @@ export function Header() {
     <div style={{ height: '2rem', display: 'flex', justifyContent: 'space-between' }}>
       <div>Hello, {user.name}!</div>
       <button onClick={logout}>logout</button>
+      <Link href={'/admin'}>Admin UI</Link>
     </div>
   );
 }
