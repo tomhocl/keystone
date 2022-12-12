@@ -27,12 +27,17 @@ In general, you will use `SessionStrategy` objects from the `@keystone-6/auth/se
 {% else /%}
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
-In general, you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
+In general, you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
 {% /if %}
+
 
 ```typescript
 import { config } from '@keystone-6/core';
+{% if $nextRelease %}
 import { statelessSessions } from '@keystone-6/auth/session';
+{% else /%}
+import { statelessSessions } from '@keystone-6/core/session';
+{% /if %}
 
 export default config({
   session: statelessSessions({
@@ -76,6 +81,7 @@ import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
 {% else /%}
 import { statelessSessions, storedSessions } from '@keystone-6/core/session';
 {% /if %}
+
 
 export default config({
   // Stateless
