@@ -88,7 +88,12 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        link: createUploadLink({ uri: props.apiPath }),
+        link: createUploadLink({
+          uri: props.apiPath,
+          headers: {
+            'apollo-require-preflight': 'true',
+          },
+        }),
       }),
     [props.apiPath]
   );

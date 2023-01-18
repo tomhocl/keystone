@@ -1,4 +1,7 @@
 import fs from 'fs';
+import https from 'https';
+import crypto from 'crypto';
+import { stringify } from 'querystring';
 import cloudinary from 'cloudinary';
 
 export type File = { id: string; filename: string; _meta: cloudinary.UploadApiResponse };
@@ -35,20 +38,21 @@ export type CloudinaryImageFormat = {
   transformation?: string | null;
 };
 
-function uploadStream(
-  stream: fs.ReadStream,
-  options: cloudinary.UploadApiOptions
-): Promise<cloudinary.UploadApiResponse> {
-  return new Promise((resolve, reject) => {
-    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(options, (error, result) => {
-      if (error || !result) {
-        return reject(error);
-      }
-      resolve(result);
-    });
+function encodeFilePart(boundary, type, name, filename) {
+  return [
+    `--${boundary}`,
+    `Content-Disposition: form-data; name="${name}"; filename="${filename}"`,
+    `Content-Type: ${type}`,
+    '',
+    '',
+  ].join('\r\n');
+}
 
-    stream.pipe(cloudinaryStream);
-  });
+function random_public_id() {
+  return crypto
+    .randomBytes(12)
+    .toString('base64')
+    .replace(/[^a-z0-9]/g, '');
 }
 
 export class CloudinaryAdapter {
@@ -79,21 +83,109 @@ export class CloudinaryAdapter {
   /**
    * Params: { stream, filename, id }
    */
-  save({ stream, filename, id }: { stream: fs.ReadStream; filename: string; id: string }) {
+  async save({ stream, filename, id }: { stream: fs.ReadStream; filename: string; id: string }) {
     // Push to cloudinary
-    return uploadStream(stream, {
-      public_id: id,
-      folder: this.folder,
-      // Auth
-      api_key: this.apiKey,
-      api_secret: this.apiSecret,
-      cloud_name: this.cloudName,
-    }).then(result => ({
-      // Return the relevant data for the File api
-      id,
-      filename,
-      _meta: result,
-    }));
+    try {
+      // pipe the stream to cloudinary using https
+      // https://cloudinary.com/documentation/upload_images#uploading_with_a_direct_call_to_the_rest_api
+      const boundary = random_public_id();
+
+      const file_header = Buffer.from(
+        encodeFilePart(boundary, 'application/octet-stream', 'file', filename),
+        'binary'
+      );
+      const result = await new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
+        const options = {
+          public_id: id,
+          folder: this.folder,
+          api_key: this.apiKey,
+          timestamp: Math.floor(new Date().getTime() / 1000),
+          cloud_name: this.cloudName,
+          //api_secret: this.apiSecret,
+          secure: true,
+          stream: true,
+          //file: `${this.folder}/${filename}`,
+        };
+
+        const signature = cloudinary.v2.utils.api_sign_request(
+          { folder: options.folder, timestamp: options.timestamp, public_id: options.public_id },
+          this.apiSecret
+        );
+
+        const queryString = stringify({ ...options, signature });
+
+        const url = `${cloudinary.v2.utils.api_url('upload', options)}?${queryString}`;
+        console.log('url', url);
+
+        const cloudinaryStream = https.request(
+          url,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': `multipart/form-data; boundary=${boundary}`,
+            },
+          },
+          res => {
+            let buffers: Buffer[] = [];
+            res.on('data', chunk => {
+              console.log('Cloudinary upload chunk');
+              buffers.push(chunk);
+            });
+            res.on('error', error => {
+              console.log('Cloudinary upload error', error);
+              reject(error);
+            });
+            res.on('end', () => {
+              console.log('Cloudinary upload complete');
+              const data = JSON.parse(Buffer.concat(buffers).toString());
+              console.log('data', data);
+
+              resolve(data);
+            });
+          }
+        );
+        cloudinaryStream.on('error', error => {
+          reject(error);
+        });
+        cloudinaryStream.write(file_header);
+        stream.pipe(cloudinaryStream);
+      });
+
+      //const result: cloudinary.UploadApiResponse = await new Promise(resolve => {
+      //  const options = {
+      //    public_id: id,
+      //    folder: this.folder,
+      //    api_key: this.apiKey,
+      //    api_secret: this.apiSecret,
+      //    cloud_name: this.cloudName,
+      //  };
+      //  const cloudinaryStream = cloudinary.v2.uploader
+      //    .upload_stream(options, (error, result) => {
+      //      if (error || !result) {
+      //        console.log('Cloudinary upload error', error);
+      //        throw new GraphQLError('Cloudinary upload error', error);
+      //      } else {
+      //        resolve(result);
+      //      }
+      //    })
+      //    .on('close', () => {
+      //      console.log('Cloudinary upload complete');
+      //    });
+      //  stream.pipe(cloudinaryStream).on('close', () => {
+      //    console.log('Stream closed');
+      //  });
+      //});
+
+      return {
+        // Return the relevant data for the File api
+        id,
+        filename,
+        _meta: result,
+      };
+    } catch (error) {
+      console.log('Cloudinary upload error', error);
+      throw new Error('Cloudinary upload error');
+    }
   }
 
   /**

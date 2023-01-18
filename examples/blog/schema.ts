@@ -1,6 +1,14 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { cloudinaryImage } from '@keystone-6/cloudinary';
+
+const cloudinary = {
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'fake',
+  apiKey: process.env.CLOUDINARY_KEY || 'fake',
+  apiSecret: process.env.CLOUDINARY_SECRET || 'fake',
+  folder: 'testing',
+};
 
 export const lists = {
   Post: list({
@@ -16,6 +24,10 @@ export const lists = {
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
         ],
+      }),
+      image: cloudinaryImage({
+        cloudinary,
+        label: 'Source',
       }),
       content: text(),
       publishDate: timestamp(),

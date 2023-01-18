@@ -125,23 +125,36 @@ export const cloudinaryImage =
         return undefined;
       }
 
-      const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
-      const stream = createReadStream();
+      try {
+        const {
+          createReadStream,
+          filename: originalFilename,
+          mimetype,
+          encoding,
+        } = await uploadData;
+        const stream = createReadStream();
 
-      if (!stream) {
-        // TODO: FIXME: Handle when stream is null. Can happen when:
-        // Updating some other part of the item, but not the file (gets null
-        // because no File DOM element is uploaded)
-        return undefined;
+        if (!stream) {
+          // TODO: FIXME: Handle when stream is null. Can happen when:
+          // Updating some other part of the item, but not the file (gets null
+          // because no File DOM element is uploaded)
+          return undefined;
+        }
+
+        const { id, filename, _meta } = await adapter.save({
+          stream,
+          filename: originalFilename,
+          id: cuid(),
+        });
+        if (!id) {
+          throw new Error('Unable to upload file');
+        }
+
+        return { id, filename, originalFilename, mimetype, encoding, _meta };
+      } catch (err) {
+        console.log(err);
+        throw new Error('Unable to upload file');
       }
-
-      const { id, filename, _meta } = await adapter.save({
-        stream,
-        filename: originalFilename,
-        id: cuid(),
-      });
-
-      return { id, filename, originalFilename, mimetype, encoding, _meta };
     };
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
